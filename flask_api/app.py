@@ -1,17 +1,17 @@
-from flask import Flask
+from flask import Flask, Blueprint
+from models import db
 from routes import api
-from db import init_database
 
-def create_app():
-    app = Flask(__name__)
-    app.register_blueprint(api)
+app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = (
+    "postgresql://postgres:0000@localhost:5432/storyline"
+)
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-    
-    init_database()
-
-    return app
-
+db.init_app(app)
+app.register_blueprint(api)
 
 if __name__ == "__main__":
-    app = create_app()
-    app.run(debug=True)
+    with app.app_context():
+        db.create_all()
+    app.run(port=5000, debug=True)

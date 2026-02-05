@@ -1,112 +1,120 @@
-from db import get_db_connection, init_database
+from flask import Flask
+from models import db, Story, Page, Choice
+'''
 
-init_database()
 
-conn = get_db_connection()
-cur = conn.cursor()
 
-# DEV ONLY: clear old data
-cur.execute("DELETE FROM choices")
-cur.execute("DELETE FROM pages")
-cur.execute("DELETE FROM stories")
-conn.commit()
+     STORY FILE MADE BY AI (IDEA BY JAKUB AND TRISTAN)
 
-# Insert story
-cur.execute("""
-    INSERT INTO stories (title, description, author_name)
-    VALUES (%s, %s, %s)
-    RETURNING id
-""", (
-    "Mohith Exam Day",
-    "A chaotic trip from La Defense to EPITA for a Python exam.",
-    "System"
-))
-story_id = cur.fetchone()["id"]
 
-pages = {}
 
-def add_page(key, content, is_start=False, is_ending=False):
-    cur.execute("""
-        INSERT INTO pages (story_id, page_key, content, is_start, is_ending)
-        VALUES (%s, %s, %s, %s, %s)
-        RETURNING id
-    """, (story_id, key, content, is_start, is_ending))
-    pages[key] = cur.fetchone()["id"]
 
-def add_choice(from_key, to_key, text, order, time_change=0):
-    cur.execute("""
-        INSERT INTO choices (from_page_id, to_page_id, choice_text, choice_order, time_change)
-        VALUES (%s, %s, %s, %s, %s)
-    """, (pages[from_key], pages[to_key], text, order, time_change))
+'''
+# --- Flask app setup ---
+app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = ("postgresql://postgres:0000@localhost:5432/storyline")
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db.init_app(app)
 
-# Pages
+# --- The story content ---
+MOHITH_STORY = {
+    "title": "Mohith's Python Exam Adventure",
+    "description": "Mohith navigates Paris and crazy obstacles on his way to EPITA for his Python for Web exam.",
+    "author_name": "Jakub",
+    "pages": [
+        {
+            "page_key": "night_before_exam",
+            "content": "It's the night before Mohith's Python for Web exam. Do you go to sleep or scroll 5 more minutes on Instagram?",
+            "is_start": True,
+            "choices": [
+                {"choice_text": "Go to sleep", "next_page_key": "wake_up_early"},
+                {"choice_text": "Scroll 5 more minutes", "next_page_key": "wake_up_late"}
+            ]
+        },
+        {
+            "page_key": "wake_up_early",
+            "content": "Mohith wakes up early and prepares calmly. He grabs his student card and calculator.",
+            "choices": [
+                {"choice_text": "Take metro to EPITA", "next_page_key": "metro_good"},
+            ]
+        },
+        {
+            "page_key": "wake_up_late",
+            "content": "Mohith overslept and is late. He forgot his calculator.",
+            "choices": [
+                {"choice_text": "Rush to EPITA anyway", "next_page_key": "metro_bad"},
+            ]
+        },
+        {
+            "page_key": "metro_good",
+            "content": "The metro is smooth. You arrive early. No issues.",
+            "is_ending": True
+        },
+        {
+            "page_key": "metro_bad",
+            "content": "On the metro, Mohith scrolls Instagram and misses his station. A random grandma gives him directions, but he's late.",
+            "is_ending": True
+        }
+    ]
+}
 
-add_page("start", "Paris, La Defense. The night before his Python for Web exam. Mohith lies in bed with his phone. It is 23:47.", is_start=True)
+# --- Helper function to get page by key ---
+def get_page_by_key(pages, key):
+    for p in pages:
+        if p.page_key == key:
+            return p
+    return None
 
-add_page("sleep", "07:00. Mohith wakes up feeling okay. Today is the Python for Web exam at EPITA.")
-add_page("overscroll", "Five minutes become forty. Mohith wakes up late and panics.")
+# --- Import function ---
+def import_mohith_story():
+    with app.app_context():
+        # 1. Create story
+        story = Story(
+            title=MOHITH_STORY["title"],
+            description=MOHITH_STORY["description"],
+            author_name=MOHITH_STORY["author_name"]
+        )
+        db.session.add(story)
+        db.session.commit()
 
-add_page("check_bag", "Before leaving, Mohith thinks about his bag. Does he have his student card and calculator?")
+        pages = []
 
-add_page("leave_house", "Mohith rushes outside and heads to the metro at La Defense.")
+        # 2. Create pages
+        for p_data in MOHITH_STORY["pages"]:
+            page = Page(
+                story_id=story.id,
+                page_key=p_data["page_key"],
+                content=p_data["content"],
+                is_start=p_data.get("is_start", False),
+                is_ending=p_data.get("is_ending", False)
+            )
+            db.session.add(page)
+            pages.append(page)
 
-add_page("metro_run", "The metro doors are closing.")
-add_page("miss_train", "The metro leaves without him. He has to wait for the next one.")
+        db.session.commit()  # commit to get page IDs
 
-add_page("in_metro", "Inside the metro. It is crowded and noisy.")
+        # 3. Set start_page_id
+        start_page = next((p for p in pages if p.is_start), None)
+        if start_page:
+            story.start_page_id = start_page.id
+            db.session.commit()
 
-add_page("scroll_metro", "You start scrolling on your phone. One video becomes many.")
+        # 4. Create choices
+        for p_data in MOHITH_STORY["pages"]:
+            from_page = get_page_by_key(pages, p_data["page_key"])
+            for c_data in p_data.get("choices", []):
+                to_page = get_page_by_key(pages, c_data["next_page_key"])
+                if to_page:
+                    choice = Choice(
+                        from_page_id=from_page.id,
+                        to_page_id=to_page.id,
+                        choice_text=c_data["choice_text"]
+                    )
+                    db.session.add(choice)
 
-add_page("miss_station", "The doors close. That was your station. You missed it.")
+        db.session.commit()
+        print("✓ Mohith story imported successfully!")
 
-add_page("backtrack", "You get off at the next stop and wait for the metro in the other direction.")
-
-add_page("grandma", "A random grandma talks to you and asks if this metro goes to Chatelet.")
-
-add_page("near_epita", "You get off near EPITA. The building is in sight.")
-
-add_page("good_end", "You arrive on time and have everything. The exam begins. Good luck Mohith.", is_ending=True)
-add_page("late_end", "You arrive too late. The doors are closed. Maybe scrolling was not worth it.", is_ending=True)
-
-# Choices
-
-add_choice("start", "sleep", "Go to sleep now", 1, 0)
-add_choice("start", "overscroll", "Scroll five more minutes on Instagram", 2, 0)
-
-add_choice("sleep", "check_bag", "Get up and get ready", 1, 0)
-add_choice("overscroll", "check_bag", "Panic and get ready fast", 1, 10)
-
-add_choice("check_bag", "leave_house", "Check bag quickly and leave", 1, 0)
-add_choice("check_bag", "leave_house", "Do not check bag and leave", 2, 0)
-
-add_choice("leave_house", "metro_run", "Run to catch the metro", 1, -5)
-add_choice("leave_house", "miss_train", "Walk and check your phone", 2, 5)
-
-add_choice("metro_run", "in_metro", "Jump inside at the last second", 1, -5)
-add_choice("metro_run", "miss_train", "Miss the train", 2, 10)
-
-add_choice("miss_train", "in_metro", "Wait for the next train", 1, 10)
-
-add_choice("in_metro", "grandma", "Revise Python notes", 1, 0)
-add_choice("in_metro", "scroll_metro", "Scroll social media", 2, 0)
-add_choice("in_metro", "grandma", "Stare into space", 3, 5)
-
-add_choice("scroll_metro", "miss_station", "Keep scrolling", 1, 10)
-add_choice("scroll_metro", "grandma", "Stop and pay attention", 2, 0)
-
-add_choice("miss_station", "backtrack", "Get off and go back", 1, 15)
-
-add_choice("backtrack", "grandma", "Finally get back on track", 1, 0)
-
-add_choice("grandma", "near_epita", "Help her and listen", 1, 5)
-add_choice("grandma", "near_epita", "Give a quick answer and ignore", 2, 0)
-add_choice("grandma", "near_epita", "Pretend you do not speak French", 3, 5)
-
-add_choice("near_epita", "good_end", "Run to the building", 1, -5)
-add_choice("near_epita", "late_end", "Walk and hope for the best", 2, 5)
-
-conn.commit()
-cur.close()
-conn.close()
-
-print("Story imported successfully!")
+# --- Run import ---
+if __name__ == "__main__":
+    import_mohith_story()

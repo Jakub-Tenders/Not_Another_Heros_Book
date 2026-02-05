@@ -1,75 +1,65 @@
-from db import get_db_connection
+from flask_sqlalchemy import SQLAlchemy
+
+db = SQLAlchemy()
+
+class Story(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(200), nullable=False)
+    description = db.Column(db.Text)
+    author_name = db.Column(db.String(100), nullable=False)
+    status = db.Column(db.String(20), default="published")
+    start_page_id = db.Column(db.Integer, nullable=True)
+    created_at = db.Column(db.DateTime, server_default=db.func.now())
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "title": self.title,
+            "description": self.description,
+            "author_name": self.author_name,
+            "status": self.status,
+            "start_page_id": self.start_page_id,
+            "created_at": self.created_at.isoformat() if self.created_at else None
+        }
 
 
-# -------- STORIES --------
+class Page(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    story_id = db.Column(db.Integer, db.ForeignKey("story.id"), nullable=False)
+    page_key = db.Column(db.String(100), nullable=False)
+    content = db.Column(db.Text, nullable=False)
+    is_start = db.Column(db.Boolean, default=False)
+    is_ending = db.Column(db.Boolean, default=False)
+    page_number = db.Column(db.Integer)
+    extradata = db.Column(db.JSON)
 
-def get_all_stories():
-    conn = get_db_connection()
-    cur = conn.cursor()
-    cur.execute("SELECT * FROM stories ORDER BY created_at DESC")
-    stories = cur.fetchall()
-    cur.close()
-    conn.close()
-    return stories
-
-
-def get_story_by_id(story_id):
-    conn = get_db_connection()
-    cur = conn.cursor()
-    cur.execute("SELECT * FROM stories WHERE id = %s", (story_id,))
-    story = cur.fetchone()
-    cur.close()
-    conn.close()
-    return story
-
-
-# -------- PAGES --------
-
-def get_start_page(story_id):
-    conn = get_db_connection()
-    cur = conn.cursor()
-    cur.execute("""
-        SELECT * FROM pages
-        WHERE story_id = %s AND is_start = TRUE
-        LIMIT 1
-    """, (story_id,))
-    page = cur.fetchone()
-    cur.close()
-    conn.close()
-    return page
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "story_id": self.story_id,
+            "page_key": self.page_key,
+            "content": self.content,
+            "is_start": self.is_start,
+            "is_ending": self.is_ending,
+            "page_number": self.page_number,
+            "extradata": self.extradata
+        }
 
 
-def get_page_by_id(page_id):
-    conn = get_db_connection()
-    cur = conn.cursor()
-    cur.execute("SELECT * FROM pages WHERE id = %s", (page_id,))
-    page = cur.fetchone()
-    cur.close()
-    conn.close()
-    return page
+class Choice(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    from_page_id = db.Column(db.Integer, db.ForeignKey("page.id"), nullable=False)
+    to_page_id = db.Column(db.Integer, db.ForeignKey("page.id"), nullable=False)
+    choice_text = db.Column(db.String(500), nullable=False)
+    choice_order = db.Column(db.Integer, default=0)
+    time_change = db.Column(db.Integer, default=0)
 
-
-# -------- CHOICES --------
-
-def get_choices_for_page(page_id):
-    conn = get_db_connection()
-    cur = conn.cursor()
-    cur.execute("""
-        SELECT * FROM choices
-        WHERE from_page_id = %s
-        ORDER BY choice_order ASC
-    """, (page_id,))
-    choices = cur.fetchall()
-    cur.close()
-    conn.close()
-    return choices
-
-
-def get_choice_by_id(choice_id):
-    conn = get_db_connection()
-    cur = conn.cursor()
-    cur.execute("SELECT * FROM choices WHERE id = %s", (choice_id,))
-    choice = cur.fetchone()
-    cur.close()
-    conn.close()
-    return choice
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "from_page_id": self.from_page_id,
+            "to_page_id": self.to_page_id,
+            "choice_text": self.choice_text,
+            "choice_order": self.choice_order,
+            "time_change": self.time_change
+        }
