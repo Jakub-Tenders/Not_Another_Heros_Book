@@ -7,8 +7,9 @@ api = Blueprint("api", __name__)
 def require_api_key():
     """Check API key for write operations"""
     expected = current_app.config.get("API_KEY", "")
+    expected = current_app.config.get("API_KEY", "")
     if not expected:
-        return None  # If no key is configured, allow access
+        return jsonify({"error": "API key not configured"}), 500
     
     provided = request.headers.get("X-API-KEY", "")
     if provided != expected:
