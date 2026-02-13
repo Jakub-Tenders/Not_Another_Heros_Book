@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}Add Choice — {{ story.title }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <a href="{% url 'author_page_edit' page.id %}" class="btn btn-secondary">← Back to Page</a>
+    <h1>Add Choice</h1>
+</div>
+
+<div class="form-card context-card">
+    <p class="context-label">Adding a choice to:</p>
+    <p class="context-text">{{ page.text|truncatechars:200 }}</p>
+</div>
+
+<form method="post" class="form-card">
+    {% csrf_token %}
+
+    <div class="form-group">
+        <label for="text">Choice Text *</label>
+        <input type="text" id="text" name="text" required
+               placeholder="e.g. Go to sleep, Rush to EPITA anyway">
+    </div>
+
+    <div class="form-group">
+        <label for="next_page_id">Goes to page *</label>
+        <select id="next_page_id" name="next_page_id" required>
+            <option value="">— Select destination page —</option>
+            {% for p in all_pages %}
+                {% if p.id != page.id %}
+                    <option value="{{ p.id }}">{{ p.page_key }} — {{ p.text|truncatechars:60 }}</option>
+                {% endif %}
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Add Choice</button>
+        <a href="{% url 'author_page_edit' page.id %}" class="btn btn-secondary">Cancel</a>
+    </div>
+</form>
+{% endblock %}

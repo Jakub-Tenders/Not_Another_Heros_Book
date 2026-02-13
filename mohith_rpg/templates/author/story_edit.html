@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block title %}Edit: {{ story.title }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <a href="{% url 'author_dashboard' %}" class="btn btn-secondary">← Dashboard</a>
+    <h1>Edit Story</h1>
+    <a href="{% url 'play_start' story.id %}" class="btn btn-secondary">Preview →</a>
+</div>
+
+<form method="post" class="form-card">
+    {% csrf_token %}
+
+    <div class="form-group">
+        <label for="title">Title *</label>
+        <input type="text" id="title" name="title" value="{{ story.title }}" required>
+    </div>
+
+    <div class="form-group">
+        <label for="description">Description</label>
+        <textarea id="description" name="description" rows="3">{{ story.description }}</textarea>
+    </div>
+
+    <div class="form-group">
+        <label for="status">Status</label>
+        <select id="status" name="status">
+            <option value="draft" {% if story.status == "draft" %}selected{% endif %}>Draft</option>
+            <option value="published" {% if story.status == "published" %}selected{% endif %}>Published</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="tags">Tags <span class="hint">(comma separated)</span></label>
+        <input type="text" id="tags" name="tags" value="{{ story.tags|default:'' }}">
+    </div>
+
+    <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+    </div>
+</form>
+
+<!-- Pages Section -->
+<div class="section-header">
+    <h2>Pages</h2>
+    <a href="{% url 'author_page_create' story.id %}" class="btn btn-primary">+ Add Page</a>
+</div>
+
+{% if story.pages %}
+    <div class="pages-list">
+        {% for page in story.pages %}
+        <div class="page-item {% if page.is_ending %}page-ending{% endif %} {% if page.id == story.start_page_id %}page-start{% endif %}">
+            <div class="page-item-header">
+                <div class="page-item-badges">
+                    {% if page.id == story.start_page_id %}
+                        <span class="badge badge-start">START</span>
+                    {% endif %}
+                    {% if page.is_ending %}
+                        <span class="badge badge-ending">ENDING</span>
+                    {% endif %}
+                    <span class="badge">{{ page.page_key }}</span>
+                </div>
+                <div class="page-item-actions">
+                    <a href="{% url 'author_page_edit' page.id %}" class="btn btn-small">Edit</a>
+                    <form method="post" action="{% url 'author_page_delete' page.id %}" style="display:inline"
+                          onsubmit="return confirm('Delete this page?')">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-small btn-danger">Delete</button>
+                    </form>
+                </div>
+            </div>
+
+            <p class="page-item-text">{{ page.text|truncatechars:120 }}</p>
+
+            {% if page.choices %}
+                <div class="page-item-choices">
+                    <strong>Choices:</strong>
+                    {% for choice in page.choices %}
+                        <span class="choice-tag">{{ choice.text }}</span>
+                    {% endfor %}
+                </div>
+            {% elif not page.is_ending %}
+                <p class="no-choices">⚠️ No choices — add one or mark as ending.</p>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="empty-state">
+        <p>No pages yet. Add the first page to get started.</p>
+        <a href="{% url 'author_page_create' story.id %}" class="btn btn-primary">Add First Page</a>
+    </div>
+{% endif %}
+{% endblock %}

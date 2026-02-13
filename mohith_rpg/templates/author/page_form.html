@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block title %}{{ action }} Page — {{ story.title }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <a href="{% url 'author_story_edit' story.id %}" class="btn btn-secondary">← Back to Story</a>
+    <h1>{{ action }} Page</h1>
+</div>
+
+<form method="post" class="form-card">
+    {% csrf_token %}
+
+    <div class="form-group">
+        <label for="text">Page Text *</label>
+        <textarea id="text" name="text" rows="6" required placeholder="What happens on this page...">{{ page.text|default:'' }}</textarea>
+    </div>
+
+    <div class="form-group form-check">
+        <input type="checkbox" id="is_ending" name="is_ending" {% if page.is_ending %}checked{% endif %}>
+        <label for="is_ending">This is an ending page</label>
+    </div>
+
+    <div class="form-group" id="ending-label-group">
+        <label for="ending_label">Ending Label <span class="hint">(optional)</span></label>
+        <input type="text" id="ending_label" name="ending_label"
+               value="{{ page.ending_label|default:'' }}"
+               placeholder="e.g. Good Ending, Bad Ending">
+    </div>
+
+    <div class="form-actions">
+        <button type="submit" class="btn btn-primary">{{ action }} Page</button>
+        <a href="{% url 'author_story_edit' story.id %}" class="btn btn-secondary">Cancel</a>
+    </div>
+</form>
+
+{% if action == "Edit" and page %}
+<div class="section-header">
+    <h2>Choices on this page</h2>
+    <a href="{% url 'author_choice_create' page.id %}" class="btn btn-primary">+ Add Choice</a>
+</div>
+
+{% if page.choices %}
+    <div class="choices-list">
+        {% for choice in page.choices %}
+        <div class="choice-item">
+            <span class="choice-text">{{ choice.text }}</span>
+            <span class="choice-arrow">→ Page {{ choice.next_page_id }}</span>
+            <form method="post" action="{% url 'author_choice_delete' choice.id %}" style="display:inline"
+                  onsubmit="return confirm('Delete this choice?')">
+                {% csrf_token %}
+                <input type="hidden" name="page_id" value="{{ page.id }}">
+                <button type="submit" class="btn btn-small btn-danger">Delete</button>
+            </form>
+        </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="empty-state">
+        <p>No choices yet.
+            {% if not page.is_ending %}
+                Add choices or mark this page as an ending.
+            {% endif %}
+        </p>
+    </div>
+{% endif %}
+{% endif %}
+
+<script>
+    // Show/hide ending label based on checkbox
+    const checkbox = document.getElementById('is_ending');
+    const labelGroup = document.getElementById('ending-label-group');
+    function toggleEndingLabel() {
+        labelGroup.style.display = checkbox.checked ? 'block' : 'none';
+    }
+    toggleEndingLabel();
+    checkbox.addEventListener('change', toggleEndingLabel);
+</script>
+{% endblock %}

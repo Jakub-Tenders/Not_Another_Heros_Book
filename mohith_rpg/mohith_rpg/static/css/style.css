@@ -1,0 +1,409 @@
+/* ─── Reset & Base ─────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: Georgia, 'Times New Roman', serif;
+    background: #f5f0e8;
+    color: #2c2c2c;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+a { color: #5c3d1e; text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ─── Navbar ────────────────────────────────────── */
+.navbar {
+    background: #2c1a0e;
+    padding: 1rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.nav-brand {
+    color: #f5e6c8;
+    font-size: 1.3rem;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.nav-links a {
+    color: #d4b483;
+    margin-left: 1.5rem;
+    font-size: 0.95rem;
+    text-decoration: none;
+}
+
+.nav-links a:hover { color: #f5e6c8; }
+
+/* ─── Container ─────────────────────────────────── */
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+    flex: 1;
+}
+
+/* ─── Page Header ───────────────────────────────── */
+.page-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+
+.page-header h1 {
+    font-size: 1.8rem;
+    color: #2c1a0e;
+    flex: 1;
+}
+
+/* ─── Buttons ───────────────────────────────────── */
+.btn {
+    display: inline-block;
+    padding: 0.5rem 1.2rem;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-family: inherit;
+    text-decoration: none;
+    transition: opacity 0.15s;
+}
+
+.btn:hover { opacity: 0.85; text-decoration: none; }
+
+.btn-primary   { background: #5c3d1e; color: #fff; }
+.btn-secondary { background: #d4c5a9; color: #2c2c2c; }
+.btn-danger    { background: #9b2335; color: #fff; }
+.btn-small     { padding: 0.3rem 0.8rem; font-size: 0.8rem; }
+
+/* ─── Messages ──────────────────────────────────── */
+.messages { margin-bottom: 1.5rem; }
+
+.message {
+    padding: 0.8rem 1rem;
+    border-radius: 4px;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.message-success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+.message-error   { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+.message-warning { background: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
+
+/* ─── Story Grid (Home) ─────────────────────────── */
+.search-form {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+}
+
+.search-form input {
+    flex: 1;
+    padding: 0.6rem 1rem;
+    border: 1px solid #c9b99a;
+    border-radius: 4px;
+    font-size: 0.95rem;
+    font-family: inherit;
+    background: #fff;
+}
+
+.story-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+.story-card {
+    background: #fff;
+    border: 1px solid #ddd0bb;
+    border-radius: 8px;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.story-title { font-size: 1.2rem; color: #2c1a0e; }
+.story-description { color: #555; font-size: 0.9rem; line-height: 1.5; flex: 1; }
+
+.story-meta {
+    font-size: 0.8rem;
+    color: #888;
+    display: flex;
+    justify-content: space-between;
+}
+
+/* ─── Gameplay ──────────────────────────────────── */
+.play-container { max-width: 680px; margin: 0 auto; }
+
+.play-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.play-header h2 { font-size: 1.3rem; color: #2c1a0e; }
+
+.page-card {
+    background: #fff;
+    border: 1px solid #ddd0bb;
+    border-radius: 8px;
+    padding: 2.5rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+}
+
+.page-text {
+    font-size: 1.15rem;
+    line-height: 1.8;
+    color: #2c2c2c;
+    margin-bottom: 2rem;
+}
+
+.choices-label {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #888;
+    margin-bottom: 0.8rem;
+}
+
+.choice-btn {
+    display: block;
+    width: 100%;
+    padding: 0.9rem 1.2rem;
+    margin-bottom: 0.6rem;
+    background: #f5f0e8;
+    border: 1px solid #c9b99a;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-family: inherit;
+    text-align: left;
+    transition: background 0.15s, border-color 0.15s;
+}
+
+.choice-btn:hover {
+    background: #5c3d1e;
+    color: #fff;
+    border-color: #5c3d1e;
+}
+
+.ending {
+    text-align: center;
+    padding: 1.5rem 0 0.5rem;
+}
+
+.ending-label {
+    font-size: 1.3rem;
+    color: #5c3d1e;
+    margin-bottom: 1.5rem;
+    font-style: italic;
+}
+
+.ending-actions { display: flex; gap: 1rem; justify-content: center; }
+
+/* ─── Author Tools ──────────────────────────────── */
+.story-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.story-table th {
+    background: #2c1a0e;
+    color: #f5e6c8;
+    padding: 0.8rem 1rem;
+    text-align: left;
+    font-size: 0.85rem;
+    font-weight: normal;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.story-table td {
+    padding: 0.8rem 1rem;
+    border-bottom: 1px solid #eee;
+    font-size: 0.9rem;
+}
+
+.story-table tr:last-child td { border-bottom: none; }
+.story-table tr:hover td { background: #faf7f2; }
+
+.actions { display: flex; gap: 0.4rem; align-items: center; }
+
+.status-badge {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-family: monospace;
+}
+
+.status-published { background: #d4edda; color: #155724; }
+.status-draft     { background: #fff3cd; color: #856404; }
+
+/* ─── Forms ─────────────────────────────────────── */
+.form-card {
+    background: #fff;
+    border: 1px solid #ddd0bb;
+    border-radius: 8px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.form-group {
+    margin-bottom: 1.2rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.4rem;
+    font-size: 0.9rem;
+    color: #444;
+}
+
+.form-group input[type="text"],
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 0.6rem 0.8rem;
+    border: 1px solid #c9b99a;
+    border-radius: 4px;
+    font-size: 0.95rem;
+    font-family: inherit;
+    background: #faf7f2;
+}
+
+.form-group textarea { resize: vertical; }
+
+.form-check {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.form-check input { width: auto; }
+.form-check label { margin: 0; }
+
+.form-actions { display: flex; gap: 0.8rem; margin-top: 1.5rem; }
+
+.hint { color: #999; font-size: 0.8rem; }
+
+/* ─── Pages List (story_edit) ───────────────────── */
+.section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 2rem 0 1rem;
+}
+
+.section-header h2 { font-size: 1.3rem; color: #2c1a0e; }
+
+.pages-list { display: flex; flex-direction: column; gap: 0.8rem; }
+
+.page-item {
+    background: #fff;
+    border: 1px solid #ddd0bb;
+    border-radius: 6px;
+    padding: 1rem 1.2rem;
+}
+
+.page-start  { border-left: 4px solid #5c3d1e; }
+.page-ending { border-left: 4px solid #9b2335; }
+
+.page-item-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+}
+
+.page-item-badges { display: flex; gap: 0.4rem; }
+
+.badge {
+    display: inline-block;
+    padding: 0.15rem 0.5rem;
+    border-radius: 10px;
+    font-size: 0.72rem;
+    font-family: monospace;
+    background: #eee;
+    color: #555;
+}
+
+.badge-start  { background: #5c3d1e; color: #fff; }
+.badge-ending { background: #9b2335; color: #fff; }
+
+.page-item-text {
+    font-size: 0.9rem;
+    color: #444;
+    line-height: 1.5;
+    margin-bottom: 0.5rem;
+}
+
+.page-item-choices { font-size: 0.85rem; color: #666; }
+
+.choice-tag {
+    display: inline-block;
+    background: #f5f0e8;
+    border: 1px solid #c9b99a;
+    border-radius: 10px;
+    padding: 0.1rem 0.6rem;
+    margin: 0.2rem;
+    font-size: 0.8rem;
+}
+
+.no-choices { font-size: 0.85rem; color: #c07a00; }
+
+/* ─── Choices List (page_form) ──────────────────── */
+.choices-list { display: flex; flex-direction: column; gap: 0.6rem; }
+
+.choice-item {
+    background: #fff;
+    border: 1px solid #ddd0bb;
+    border-radius: 6px;
+    padding: 0.8rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.choice-text { flex: 1; font-size: 0.95rem; }
+.choice-arrow { color: #888; font-size: 0.85rem; white-space: nowrap; }
+
+/* ─── Choice Form context card ──────────────────── */
+.context-card { background: #faf7f2; border-color: #c9b99a; }
+.context-label { font-size: 0.8rem; color: #888; margin-bottom: 0.4rem; }
+.context-text { font-style: italic; color: #444; line-height: 1.5; }
+
+/* ─── Empty State ───────────────────────────────── */
+.empty-state {
+    text-align: center;
+    padding: 3rem;
+    color: #888;
+    background: #fff;
+    border: 1px dashed #c9b99a;
+    border-radius: 8px;
+}
+
+.empty-state p { margin-bottom: 1rem; }
+
+/* ─── Footer ────────────────────────────────────── */
+.footer {
+    text-align: center;
+    padding: 1.5rem;
+    font-size: 0.8rem;
+    color: #999;
+    border-top: 1px solid #ddd0bb;
+    background: #ede8de;
+}
