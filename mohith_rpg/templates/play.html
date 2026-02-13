@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}{{ story.title }} — Playing{% endblock %}
+
+{% block content %}
+<div class="play-container">
+
+    <div class="play-header">
+        <a href="{% url 'home' %}" class="btn btn-secondary">← Back to Stories</a>
+        <h2>{{ story.title }}</h2>
+    </div>
+
+    <div class="page-card">
+        <p class="page-text">{{ page.text }}</p>
+
+        {% if is_ending %}
+            <div class="ending">
+                <p class="ending-label">
+                    {% if page.ending_label %}
+                        {{ page.ending_label }}
+                    {% else %}
+                        ✨ The End
+                    {% endif %}
+                </p>
+                <div class="ending-actions">
+                    <a href="{% url 'play_restart' story.id %}" class="btn btn-primary">Play Again</a>
+                    <a href="{% url 'home' %}" class="btn btn-secondary">Other Stories</a>
+                </div>
+            </div>
+
+        {% elif choices %}
+            <div class="choices">
+                <p class="choices-label">What do you do?</p>
+                {% for choice in choices %}
+                    <form method="post" action="{% url 'play_choice' session.session_key choice.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="choice-btn">
+                            {{ choice.text }}
+                        </button>
+                    </form>
+                {% endfor %}
+            </div>
+
+        {% else %}
+            <div class="ending">
+                <p>No choices available — the story ends here.</p>
+                <a href="{% url 'play_restart' story.id %}" class="btn btn-primary">Play Again</a>
+            </div>
+        {% endif %}
+    </div>
+
+</div>
+{% endblock %}

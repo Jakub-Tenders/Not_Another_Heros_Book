@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}Stories — Not Another Hero's Book{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Choose Your Adventure</h1>
+    <p>Pick a story and make choices that shape the outcome.</p>
+</div>
+
+<form class="search-form" method="get">
+    <input type="text" name="search" value="{{ search }}" placeholder="Search stories...">
+    <button type="submit">Search</button>
+    {% if search %}
+        <a href="{% url 'home' %}" class="btn btn-secondary">Clear</a>
+    {% endif %}
+</form>
+
+{% if stories %}
+    <div class="story-grid">
+        {% for story in stories %}
+        <div class="story-card">
+            <h2 class="story-title">{{ story.title }}</h2>
+            <p class="story-description">{{ story.description }}</p>
+            <div class="story-meta">
+                <span>By {{ story.author_name }}</span>
+                {% if story.tags %}
+                    <span class="tags">{{ story.tags }}</span>
+                {% endif %}
+            </div>
+            <a href="{% url 'play_start' story.id %}" class="btn btn-primary">Play →</a>
+        </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="empty-state">
+        <p>No stories found{% if search %} for "{{ search }}"{% endif %}.</p>
+        {% if search %}
+            <a href="{% url 'home' %}">See all stories</a>
+        {% endif %}
+    </div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}Author Dashboard{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Author Dashboard</h1>
+    <a href="{% url 'author_story_create' %}" class="btn btn-primary">+ New Story</a>
+</div>
+
+{% if stories %}
+    <table class="story-table">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Status</th>
+                <th>Author</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for story in stories %}
+            <tr>
+                <td>{{ story.title }}</td>
+                <td><span class="status-badge status-{{ story.status }}">{{ story.status }}</span></td>
+                <td>{{ story.author_name }}</td>
+                <td class="actions">
+                    <a href="{% url 'author_story_edit' story.id %}" class="btn btn-small">Edit</a>
+                    <a href="{% url 'play_start' story.id %}" class="btn btn-small btn-secondary">Play</a>
+                    <form method="post" action="{% url 'author_story_delete' story.id %}" style="display:inline"
+                          onsubmit="return confirm('Delete {{ story.title }}? This cannot be undone.')">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-small btn-danger">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <div class="empty-state">
+        <p>No stories yet.</p>
+        <a href="{% url 'author_story_create' %}" class="btn btn-primary">Create your first story</a>
+    </div>
+{% endif %}
+{% endblock %}

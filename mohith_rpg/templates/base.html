@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Not Another Hero's Book{% endblock %}</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+
+<nav class="navbar">
+    <a href="{% url 'home' %}" class="nav-brand">📖 Not Another Hero's Book</a>
+    <div class="nav-links">
+        <a href="{% url 'home' %}">Stories</a>
+        <a href="{% url 'author_dashboard' %}">Author Tools</a>
+    </div>
+</nav>
+
+<main class="container">
+
+    {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+                <div class="message message-{{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    {% block content %}{% endblock %}
+
+</main>
+
+<footer class="footer">
+    <p>Not Another Hero's Book &mdash; EPITA Project</p>
+</footer>
+
+</body>
+</html>
