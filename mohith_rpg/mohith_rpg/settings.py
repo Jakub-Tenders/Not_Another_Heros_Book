@@ -57,12 +57,11 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'mohith_rpg.wsgi.application'
 
-# PostgreSQL Database
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'mohith_rpg',
-        'USER': 'user',
+        'USER': 'postgres',
         'PASSWORD': 'user',
         'HOST': 'localhost',
         'PORT': '5432',

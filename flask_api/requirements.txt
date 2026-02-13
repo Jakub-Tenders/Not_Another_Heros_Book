@@ -3,3 +3,4 @@ Flask-SQLAlchemy
 Flask-CORS
 psycopg2
 python-dotenv
+django

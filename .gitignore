@@ -1,0 +1,19 @@
+# Python
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Django
+*.log
+db.sqlite3
+/static/
+
+# Environment
+.env
+
+# Mac
+.DS_Store
+
+game/migrations/0001_initial.py 
