@@ -2,7 +2,7 @@
 
 An interactive "Choose Your Own Adventure" storytelling app built with **Flask** (REST API) and **Django** (frontend), connected via HTTP with two separate PostgreSQL databases.
 
-> **EPITA Python for Web — Project by Jakub, Tristan **
+> **EPITA Python for Web — Project by Jakub, Tristan & Mohith**
 
 ---
 
@@ -25,7 +25,7 @@ Flask API (localhost:5001)
 
 - Python 3.10+
 - PostgreSQL (running locally)
-- One shared virtual environment
+- One shared virtual environment (or two separate ones)
 
 ---
 
