@@ -1,8 +1,8 @@
-# Not Another Hero's Book 📖
+# Not Another Hero's Book 
 
 An interactive "Choose Your Own Adventure" storytelling app built with **Flask** (REST API) and **Django** (frontend), connected via HTTP with two separate PostgreSQL databases.
 
-> **EPITA Python for Web — Project by Jakub, Tristan & Mohith**
+> **EPITA Python for Web — Project by Jakub, Tristan **
 
 ---
 
@@ -87,7 +87,7 @@ FLASK_API_URL=http://localhost:5001
 FLASK_API_KEY=your-secret-key-here
 ```
 
-> ⚠️ The `FLASK_API_KEY` must be identical in both `.env` files.
+ The `FLASK_API_KEY` must be identical in both `.env` files.
 
 Run database migrations:
 ```bash
@@ -221,10 +221,7 @@ Write endpoints require the header: `X-API-KEY: your-secret-key-here`
 Flask API is not running. Start it in Terminal 1 first.
 
 **Port 5000 conflict on Mac**
-macOS uses port 5000 for AirPlay Receiver. This app uses port **5001** to avoid the conflict.
+we found that mac uses port 5000 for AirPlay Receiver. This app uses port **5001** to avoid the conflict.
 
 **`ENV LOADED - FLASK_API_URL = http://localhost:5000`**
 The `.env` file is in the wrong place. It must be at `mohith_rpg/.env`, not `mohith_rpg/mohith_rpg/.env`.
-
-**CSS not loading**
-The stylesheet must be at `mohith_rpg/static/css/style.css`.
