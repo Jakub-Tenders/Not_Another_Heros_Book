@@ -1,6 +1,6 @@
 from flask import Flask
 from models import db, Story, Page, Choice
-from config import Config  # ADD THIS
+from config import Config
 
 '''
      STORY FILE MADE BY AI (IDEA BY JAKUB AND TRISTAN)
