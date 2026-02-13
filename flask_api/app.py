@@ -2,12 +2,10 @@ from flask import Flask, Blueprint
 from flask_cors import CORS
 from models import db
 from routes import api
+from config import Config
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = (
-    "postgresql://postgres:0000@localhost:5432/storyline"
-)
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config.from_object(Config) 
 
 CORS(app)
 
