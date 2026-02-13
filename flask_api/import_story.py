@@ -137,6 +137,7 @@ def get_page_by_key(pages, key):
 # --- Import function ---
 def import_mohith_story():
     with app.app_context():
+        db.drop_all()
         db.create_all()
         print("✓ Tables created")
         

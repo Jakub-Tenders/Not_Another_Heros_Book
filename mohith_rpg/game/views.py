@@ -1,8 +1,11 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
+from django.utils import timezone
 from game.flask_api import flask_api
 from game.models import PlaySession, Play
 import uuid
+from django.contrib.auth.decorators import login_required
+from game.decorators import story_owner_required
 
 
 # ─────────────────────────────────────────
@@ -68,6 +71,7 @@ def play_page(request, session_key):
             story_id=session.story_id,
             ending_page_id=page["id"],
             user=request.user if request.user.is_authenticated else None,
+            defaults={'created_at': timezone.now()}
         )
 
     return render(request, "play.html", {
@@ -116,12 +120,14 @@ def play_restart(request, story_id):
 #  AUTHOR TOOLS
 # ─────────────────────────────────────────
 
+@login_required
 def author_dashboard(request):
     """List all stories for authoring."""
     stories = flask_api.get_stories()
-    return render(request, "author/dashboard.html", {"stories": stories})
+    user_stories = [s for s in stories if s.get('author_id') == request.user.id]
+    return render(request, 'author/dashboard.html', {'stories': user_stories})
 
-
+@login_required
 def author_story_create(request):
     """Create a new story."""
     if request.method == "POST":
@@ -142,6 +148,7 @@ def author_story_create(request):
             description=description,
             status=status,
             tags=tags if tags else None,
+            author_id=request.user.id
         )
 
         if story:
@@ -155,7 +162,8 @@ def author_story_create(request):
         "story": {},
     })
 
-
+@login_required
+@story_owner_required
 def author_story_edit(request, story_id):
     """Edit an existing story's metadata and manage its pages."""
     story = flask_api.get_story(story_id, include_pages=True)
@@ -187,7 +195,8 @@ def author_story_edit(request, story_id):
 
     return render(request, "author/story_edit.html", {"story": story})
 
-
+@login_required
+@story_owner_required
 def author_story_delete(request, story_id):
     """Delete a story."""
     if request.method == "POST":
@@ -198,7 +207,8 @@ def author_story_delete(request, story_id):
             messages.error(request, "Failed to delete story.")
     return redirect("author_dashboard")
 
-
+@login_required
+@story_owner_required
 def author_page_create(request, story_id):
     """Add a new page to a story."""
     story = flask_api.get_story(story_id)
@@ -232,7 +242,7 @@ def author_page_create(request, story_id):
         "page": {},
     })
 
-
+@login_required
 def author_page_edit(request, page_id):
     """Edit an existing page."""
     page = flask_api.get_page(page_id)
@@ -268,7 +278,7 @@ def author_page_edit(request, page_id):
         "page": page,
     })
 
-
+@login_required
 def author_page_delete(request, page_id):
     """Delete a page."""
     page = flask_api.get_page(page_id)
@@ -285,7 +295,7 @@ def author_page_delete(request, page_id):
         return redirect("author_story_edit", story_id=story_id)
     return redirect("author_dashboard")
 
-
+@login_required
 def author_choice_create(request, page_id):
     """Add a choice to a page."""
     page = flask_api.get_page(page_id)
@@ -319,7 +329,7 @@ def author_choice_create(request, page_id):
         "all_pages": story.get("pages", []),
     })
 
-
+@login_required
 def author_choice_delete(request, choice_id):
     """Delete a choice."""
     # We need page_id to redirect back - pass it as POST data

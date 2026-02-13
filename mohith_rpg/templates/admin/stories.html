@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}Admin — Moderate Stories{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>🛡️ Moderate Stories</h1>
+    <a href="{% url 'admin_reports' %}" class="btn btn-secondary">View Reports</a>
+</div>
+
+{% if stories %}
+    <table class="story-table">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Status</th>
+                <th>Created</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for story in stories %}
+            <tr>
+                <td>{{ story.title }}</td>
+                <td>{{ story.author_name }}</td>
+                <td><span class="status-badge status-{{ story.status }}">{{ story.status }}</span></td>
+                <td>{{ story.created_at|date:"M d, Y" }}</td>
+                <td class="actions">
+                    <a href="{% url 'play_start' story.id %}" class="btn btn-small btn-secondary">View</a>
+                    {% if story.status != 'suspended' %}
+                        <form method="post" action="{% url 'admin_suspend_story' story.id %}" style="display:inline"
+                              onsubmit="return confirm('Suspend {{ story.title }}?')">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-small btn-danger">Suspend</button>
+                        </form>
+                    {% else %}
+                        <form method="post" action="{% url 'admin_unsuspend_story' story.id %}" style="display:inline">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-small btn-primary">Unsuspend</button>
+                        </form>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <div class="empty-state">
+        <p>No stories found.</p>
+    </div>
+{% endif %}
+{% endblock %}

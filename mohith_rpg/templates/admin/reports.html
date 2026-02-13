@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}Admin — Reports{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>📋 User Reports</h1>
+    <a href="{% url 'admin_stories' %}" class="btn btn-secondary">Back to Stories</a>
+</div>
+
+{% if reports %}
+    <table class="story-table">
+        <thead>
+            <tr>
+                <th>Story</th>
+                <th>Reported By</th>
+                <th>Reason</th>
+                <th>Status</th>
+                <th>Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for report in reports %}
+            <tr>
+                <td>Story #{{ report.story_id }}</td>
+                <td>{{ report.user.username }}</td>
+                <td>{{ report.get_reason_display }}</td>
+                <td><span class="status-badge status-{{ report.status }}">{{ report.status }}</span></td>
+                <td>{{ report.created_at|date:"M d, Y" }}</td>
+                <td class="actions">
+                    <a href="{% url 'admin_review_report' report.id %}" class="btn btn-small">Review</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <div class="empty-state">
+        <p>No reports submitted yet.</p>
+    </div>
+{% endif %}
+{% endblock %}

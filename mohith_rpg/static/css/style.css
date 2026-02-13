@@ -407,3 +407,39 @@ a:hover { text-decoration: underline; }
     border-top: 1px solid #ddd0bb;
     background: #ede8de;
 }
+
+/* ─── Form Errors ───────────────────────────────── */
+.error {
+    color: #9b2335;
+    font-size: 0.85rem;
+    margin-top: 0.3rem;
+}
+
+.form-group input[type="text"],
+.form-group input[type="password"],
+.form-group input[type="url"],
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 0.6rem 0.8rem;
+    border: 1px solid #c9b99a;
+    border-radius: 4px;
+    font-size: 0.95rem;
+    font-family: inherit;
+    background: #faf7f2;
+}
+
+.form-group input[type="text"]:focus,
+.form-group input[type="password"]:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: #5c3d1e;
+    background: #fff;
+}
+
+/* ─── Auth Pages ────────────────────────────────── */
+.form-card {
+    max-width: 500px;
+    margin: 0 auto;
+}
