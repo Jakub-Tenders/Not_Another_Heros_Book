@@ -334,5 +334,6 @@ def remove_choice(choice_id):
     return jsonify({"message": "Choice deleted", "deleted": True}), 200
 
 
+@api.route("/health", methods=["GET"])
 def health():
     return jsonify({"status": "ok"})

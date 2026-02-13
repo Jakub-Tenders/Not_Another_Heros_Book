@@ -8,6 +8,7 @@ class Story(db.Model):
     description = db.Column(db.Text)
     tags = db.Column(db.String(500), nullable=True)
     author_name = db.Column(db.String(100), nullable=False)
+    author_id = db.Column(db.Integer, nullable=True)
     status = db.Column(db.String(20), default="published")
     start_page_id = db.Column(db.Integer, nullable=True)
     created_at = db.Column(db.DateTime, server_default=db.func.now())
@@ -17,7 +18,9 @@ class Story(db.Model):
             "id": self.id,
             "title": self.title,
             "description": self.description,
+            "tags": self.tags,
             "author_name": self.author_name,
+            "author_id": self.author_id, 
             "status": self.status,
             "start_page_id": self.start_page_id,
             "created_at": self.created_at.isoformat() if self.created_at else None
@@ -43,6 +46,7 @@ class Page(db.Model):
             "content": self.content,
             "is_start": self.is_start,
             "is_ending": self.is_ending,
+            "ending_label": self.ending_label, 
             "page_number": self.page_number,
             "extradata": self.extradata
         }
