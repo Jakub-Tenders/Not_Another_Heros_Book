@@ -8,14 +8,14 @@ from config import Config
 
 # --- Flask app setup ---
 app = Flask(__name__)
-app.config.from_object(Config)  # USE CONFIG INSTEAD OF HARDCODED
+app.config.from_object(Config)
 db.init_app(app)
 
 # --- The story content ---
 MOHITH_STORY = {
     "title": "Mohith's Python Exam Adventure",
     "description": "Mohith navigates Paris and crazy obstacles on his way to EPITA for his Python for Web exam.",
-    "author_name": "Jakub",
+    "author_name": "Jakub, Tristan",
     "pages": [
         {
             "page_key": "night_before_exam",
