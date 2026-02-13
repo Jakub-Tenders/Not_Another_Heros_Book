@@ -1,19 +1,14 @@
 from flask import Flask
 from models import db, Story, Page, Choice
+from config import Config  # ADD THIS
+
 '''
-
-
-
      STORY FILE MADE BY AI (IDEA BY JAKUB AND TRISTAN)
-
-
-
-
 '''
+
 # --- Flask app setup ---
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = ("postgresql://postgres:0000@localhost:5432/storyline")
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config.from_object(Config)  # USE CONFIG INSTEAD OF HARDCODED
 db.init_app(app)
 
 # --- The story content ---
@@ -68,6 +63,9 @@ def get_page_by_key(pages, key):
 # --- Import function ---
 def import_mohith_story():
     with app.app_context():
+        db.create_all()
+        print("✓ Tables created")
+        
         # 1. Create story
         story = Story(
             title=MOHITH_STORY["title"],
