@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}Review Report #{{ report.id }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Review Report #{{ report.id }}</h1>
+    <a href="{% url 'admin_reports' %}" class="btn btn-secondary">← Back to Reports</a>
+</div>
+
+<div class="form-card">
+    <h3>Report Details</h3>
+    
+    <div class="form-group">
+        <label>Story</label>
+        <p><a href="{% url 'play_start' story.id %}">{{ story.title }}</a></p>
+    </div>
+
+    <div class="form-group">
+        <label>Reported By</label>
+        <p>{{ report.user.username }}</p>
+    </div>
+
+    <div class="form-group">
+        <label>Reason</label>
+        <p>{{ report.get_reason_display }}</p>
+    </div>
+
+    <div class="form-group">
+        <label>Description</label>
+        <p>{{ report.description }}</p>
+    </div>
+
+    <div class="form-group">
+        <label>Status</label>
+        <p><span class="status-badge status-{{ report.status }}">{{ report.status }}</span></p>
+    </div>
+</div>
+
+{% if report.status == 'pending' %}
+<form method="post" class="form-card">
+    {% csrf_token %}
+    
+    <h3>Take Action</h3>
+    
+    <div class="form-group">
+        <label for="moderator_notes">Moderator Notes</label>
+        <textarea id="moderator_notes" name="moderator_notes" rows="4" 
+                  placeholder="Add notes about this review...">{{ report.moderator_notes }}</textarea>
+    </div>
+
+    <div class="form-actions">
+        <button type="submit" name="action" value="suspend" class="btn btn-danger">Suspend Story</button>
+        <button type="submit" name="action" value="dismiss" class="btn btn-secondary">Dismiss Report</button>
+    </div>
+</form>
+{% else %}
+<div class="form-card">
+    <h3>Review Complete</h3>
+    <p><strong>Reviewed by:</strong> {{ report.reviewed_by.username }}</p>
+    <p><strong>Notes:</strong> {{ report.moderator_notes }}</p>
+</div>
+{% endif %}
+{% endblock %}

@@ -94,6 +94,8 @@ class Report(models.Model):
         related_name='reviewed_reports'
     )
 
+    created_at = models.DateTimeField(auto_now_add=True)
+
     class Meta:
         verbose_name = 'Report'
         verbose_name_plural = 'Reports'
