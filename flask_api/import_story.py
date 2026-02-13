@@ -28,9 +28,10 @@ MOHITH_STORY = {
         },
         {
             "page_key": "wake_up_early",
-            "content": "Mohith wakes up early and prepares calmly. He grabs his student card and calculator.",
+            "content": "Mohith wakes up early and prepares calmly. He grabs his student card and calculator. You hear your dad in the shower.",
             "choices": [
-                {"choice_text": "Take metro to EPITA", "next_page_key": "metro_good"},
+                {"choice_text": "Check the shower quickly", "next_page_key": "hot_water_off"},
+                {"choice_text": "Ignore and leave for metro", "next_page_key": "metro_good"}
             ]
         },
         {
@@ -38,20 +39,93 @@ MOHITH_STORY = {
             "content": "Mohith overslept and is late. He forgot his calculator.",
             "choices": [
                 {"choice_text": "Rush to EPITA anyway", "next_page_key": "metro_bad"},
+                {"choice_text": "Call a friend for notes", "next_page_key": "friend_help"}
+            ]
+        },
+        {
+            "page_key": "hot_water_off",
+            "content": "Your dad turned off the hot water just as Mohith gets in. You freeze but manage to get ready faster.",
+            "choices": [
+                {"choice_text": "Rush to metro", "next_page_key": "metro_good"},
+                {"choice_text": "Skip breakfast to save time", "next_page_key": "metro_good"}
             ]
         },
         {
             "page_key": "metro_good",
-            "content": "The metro is smooth. You arrive early. No issues.",
-            "is_ending": True
+            "content": "The metro ride is smooth. You arrive early at EPITA. Nothing seems wrong, yet...",
+            "choices": [
+                {"choice_text": "Check your calculator just in case", "next_page_key": "exam_ready"},
+                {"choice_text": "Relax and wait in the hall", "next_page_key": "exam_ready"},
+                {"choice_text": "Help an old lady with her bag on the metro", "next_page_key": "extra_metro_event"}
+            ]
+        },
+        {
+            "page_key": "extra_metro_event",
+            "content": "While helping the old lady, the metro slows down because a street performer is playing too loudly. Mohith arrives slightly late but still manages to enter the exam hall.",
+            "choices": [
+                {"choice_text": "Rush to your seat", "next_page_key": "pigeon_attack"},
+                {"choice_text": "Take a deep breath and relax", "next_page_key": "pigeon_attack"}
+            ]
+        },
+        {
+            "page_key": "pigeon_attack",
+            "content": "On the way from the metro to EPITA, a flock of pigeons suddenly swoops down! Mohith ducks, spins, and barely avoids disaster. Your backpack gets a little messy.",
+            "choices": [
+                {"choice_text": "Run to the exam hall", "next_page_key": "exam_ready"},
+                {"choice_text": "Take a moment to clean yourself up", "next_page_key": "exam_ready"}
+            ]
         },
         {
             "page_key": "metro_bad",
-            "content": "On the metro, Mohith scrolls Instagram and misses his station. A random grandma gives him directions, but he's late.",
+            "content": "On the metro, Mohith scrolls Instagram and misses his station. A friendly grandma points him in the right direction, but time is running out.",
+            "choices": [
+                {"choice_text": "Run to EPITA quickly", "next_page_key": "exam_late_no_entry"},
+                {"choice_text": "Try to take another metro line", "next_page_key": "metro_extra_delay"},
+                {"choice_text": "Stop and thank grandma for advice", "next_page_key": "metro_extra_delay"}
+            ]
+        },
+        {
+            "page_key": "friend_help",
+            "content": "Your friend sends you the notes and a quick summary. You feel more confident, but time is short.",
+            "choices": [
+                {"choice_text": "Take metro quickly", "next_page_key": "metro_good"},
+                {"choice_text": "Review notes on metro", "next_page_key": "metro_bad"}
+            ]
+        },
+        {
+            "page_key": "metro_extra_delay",
+            "content": "The alternative metro line is delayed due to construction. Mohith runs as fast as he can, but the clock is ticking.",
+            "choices": [
+                {"choice_text": "Keep running", "next_page_key": "exam_late_no_entry"},
+                {"choice_text": "Call a taxi", "next_page_key": "taxi_rush"}
+            ]
+        },
+        {
+            "page_key": "taxi_rush",
+            "content": "You take a taxi, but traffic slows you down. Mohith barely reaches the EPITA gate.",
+            "choices": [
+                {"choice_text": "Run to the exam hall", "next_page_key": "exam_late_no_entry"},
+                {"choice_text": "Give up and wait for next exam", "next_page_key": "exam_missed"}
+            ]
+        },
+        {
+            "page_key": "exam_ready",
+            "content": "Mohith sits in the exam hall prepared. Everything is ready, and you feel confident. Good luck!",
+            "is_ending": True
+        },
+        {
+            "page_key": "exam_late_no_entry",
+            "content": "Mohith arrives too late. The exam hall door is closed. Entry is forbidden. He misses the exam!",
+            "is_ending": True
+        },
+        {
+            "page_key": "exam_missed",
+            "content": "Mohith missed the exam entirely. Time to reschedule and prepare for next attempt.",
             "is_ending": True
         }
     ]
 }
+
 
 # --- Helper function to get page by key ---
 def get_page_by_key(pages, key):
