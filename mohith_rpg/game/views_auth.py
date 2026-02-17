@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 from game.models import UserProfile, Report
 from game.flask_api import flask_api
 
+
 def register_view(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
@@ -19,63 +20,82 @@ def register_view(request):
         form = UserCreationForm()
     return render(request, 'registration/register.html', {'form': form})
 
+
 @login_required
 def profile_view(request):
-    """User profile page"""
-    return render(request, 'registration/profile.html')
+    """User profile page. Creates a UserProfile if one does not exist (e.g. superusers)."""
+    profile, created = UserProfile.objects.get_or_create(
+        user=request.user,
+        defaults={'role': 'author' if request.user.is_staff else 'reader'}
+    )
+
+    # Determine display role — staff always shows as Admin regardless of profile role
+    if request.user.is_staff:
+        display_role = 'Admin'
+    else:
+        display_role = profile.get_role_display()
+
+    return render(request, 'registration/profile.html', {
+        'display_role': display_role,
+    })
+
 
 @staff_member_required
 def admin_stories_view(request):
-    """Admin can see all stories and suspend them"""
+    """Admin can see all stories and suspend them."""
     stories = flask_api.get_stories()
     return render(request, 'admin/stories.html', {'stories': stories})
 
+
 @staff_member_required
 def admin_suspend_story(request, story_id):
-    """Suspend a story"""
+    """Suspend a story."""
     if request.method == 'POST':
         flask_api.update_story(story_id, status='suspended')
         messages.success(request, "Story suspended.")
     return redirect('admin_stories')
 
+
 @staff_member_required
 def admin_unsuspend_story(request, story_id):
-    """Unsuspend a story"""
+    """Unsuspend a story."""
     if request.method == 'POST':
         flask_api.update_story(story_id, status='published')
         messages.success(request, "Story unsuspended.")
     return redirect('admin_stories')
 
+
 @staff_member_required
 def admin_reports_view(request):
-    """Admin view all reports"""
+    """Admin view all reports."""
     reports = Report.objects.all().order_by('-id')
     return render(request, 'admin/reports.html', {'reports': reports})
 
+
 @staff_member_required
 def admin_review_report(request, report_id):
-    """Review and resolve a report"""
+    """Review and resolve a report."""
     report = get_object_or_404(Report, id=report_id)
-    
+
     if request.method == 'POST':
         action = request.POST.get('action')
         notes = request.POST.get('moderator_notes', '')
-        
+
         if action == 'suspend':
             flask_api.update_story(report.story_id, status='suspended')
             report.status = 'resolved'
         elif action == 'dismiss':
             report.status = 'dismissed'
-        
+
         report.moderator_notes = notes
         report.reviewed_by = request.user
         report.save()
-        
+
         messages.success(request, "Report reviewed.")
         return redirect('admin_reports')
-    
+
     story = flask_api.get_story(report.story_id)
     return render(request, 'admin/report_review.html', {
         'report': report,
-        'story': story
+        'story': story,
     })

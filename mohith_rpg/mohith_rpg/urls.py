@@ -22,17 +22,17 @@ from game import views_auth
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('game.urls')),
-    
+
     # Authentication URLs
     path('accounts/login/', auth_views.LoginView.as_view(), name='login'),
     path('accounts/logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('accounts/register/', views_auth.register_view, name='register'),
     path('accounts/profile/', views_auth.profile_view, name='profile'),
-    
-    # Admin moderation URLs
-    path('admin/stories/', views_auth.admin_stories_view, name='admin_stories'),
-    path('admin/stories/<int:story_id>/suspend/', views_auth.admin_suspend_story, name='admin_suspend_story'),
-    path('admin/stories/<int:story_id>/unsuspend/', views_auth.admin_unsuspend_story, name='admin_unsuspend_story'),
-    path('admin/reports/', views_auth.admin_reports_view, name='admin_reports'),
-    path('admin/reports/<int:report_id>/review/', views_auth.admin_review_report, name='admin_review_report'),
+
+    # Moderation URLs (renamed from admin/ to moderate/ to avoid conflict with Django's built-in admin panel)
+    path('moderate/stories/', views_auth.admin_stories_view, name='admin_stories'),
+    path('moderate/stories/<int:story_id>/suspend/', views_auth.admin_suspend_story, name='admin_suspend_story'),
+    path('moderate/stories/<int:story_id>/unsuspend/', views_auth.admin_unsuspend_story, name='admin_unsuspend_story'),
+    path('moderate/reports/', views_auth.admin_reports_view, name='admin_reports'),
+    path('moderate/reports/<int:report_id>/review/', views_auth.admin_review_report, name='admin_review_report'),
 ]
